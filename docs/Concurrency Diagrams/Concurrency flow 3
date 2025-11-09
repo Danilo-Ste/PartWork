@@ -1,0 +1,30 @@
+@startuml
+title Замовник відмовляється від оплати під час запиту виконавця
+
+actor "Замовник" as C
+actor "Виконавець" as W
+participant "TaskService" as Task
+participant "PaymentService" as Pay
+participant "NotificationService" as Notify
+participant "DisputeService" as Dispute
+
+W -> Task: Позначити завдання як виконане
+Task -> Pay: Створити запит на оплату (ID=512)
+
+par Одночасна дія
+    C -> Task: Натискає "Скасувати оплату / подати скаргу"
+end
+
+Task -> Task: Перевірити статус завдання
+alt Оплата ще не підтверджена
+    Task -> Dispute: Створити спір
+    Dispute -> Notify: Сповіщення сторонам
+    Notify -> C: "Скаргу прийнято, оплата призупинена"
+    Notify -> W: "Замовник оскаржив оплату — очікуйте рішення"
+else Оплата вже обробляється
+    Pay -> Task: Транзакція активна
+    Task -> Notify: "Оплату скасувати неможливо"
+    Notify -> C: "Оплата вже у процесі — зверніться у підтримку"
+end
+
+@enduml
