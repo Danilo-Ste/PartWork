@@ -1,0 +1,55 @@
+
+@startuml
+left to right direction
+
+'Актори
+actor Замовник as Client
+actor Виконавець as Worker
+actor Адміністратор as Admin
+
+skinparam usecase {
+  BackgroundColor #FFFFFF
+  BorderColor #222222
+  ArrowColor #1D4ED8
+}
+
+'Системи
+rectangle "Система керування користувачами" {
+    Client --> (Реєстрація акаунта)
+    Worker --> (Реєстрація акаунта)
+    Client --> (Вхід у профіль)
+    Worker --> (Вхід у профіль)
+    Admin --> (Модерація користувачів)
+}
+
+rectangle "Система керування завданнями" {
+    Client --> (Створити завдання)
+    Client --> (Редагувати / видалити завдання)
+    Client --> (Переглянути відгуки виконавців)
+    Worker --> (Пошук підробітків)
+    Worker --> (Відгукнутися на завдання)
+    Worker --> (Підтвердити виконання)
+}
+
+rectangle "Система оплати та рейтингу" {
+    Client --> (Підтвердити оплату)
+    Worker --> (Отримати оплату)
+    Client --> (Залишити відгук виконавцю)
+    Worker --> (Залишити відгук замовнику)
+}
+
+rectangle "Система сповіщень" {
+    Client --> (Отримати сповіщення)
+    Worker --> (Отримати сповіщення)
+}
+
+rectangle "Адміністративна панель" {
+    Admin --> (Перегляд скарг)
+    Admin --> (Блокування користувача)
+    Admin --> (Видалення недійсних завдань)
+}
+
+Client -[hidden]-> Worker
+Worker -[hidden]-> Admin
+
+@enduml
