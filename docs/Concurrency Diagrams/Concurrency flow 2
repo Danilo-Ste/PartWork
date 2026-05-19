@@ -1,0 +1,29 @@
+@startuml
+title Виконавець відкликає відгук під час вибору замовником
+
+actor "Замовник" as C
+actor "Виконавець" as W
+participant "TaskService" as Task
+participant "NotificationService" as Notify
+
+W -> Task: Відгукнутися на завдання (ID=52)
+Task -> Task: Додати у список пропозицій
+Task -> Notify: Повідомити замовника
+Notify -> C: "Новий відгук на завдання"
+
+par Одночасна дія
+    C -> Task: Обрати виконавця (W)
+    W -> Task: Відкликати відгук
+end
+
+Task -> Task: Перевірка стану відгуку
+alt Відгук уже відкликано
+    Task -> Notify: Повідомити замовника
+    Notify -> C: "Виконавець відкликав свій відгук"
+else Відгук ще активний
+    Task -> Task: Позначити W як “підтверджений”
+    Task -> Notify: "Вас обрано для виконання"
+    Notify -> W: "Вас обрано для завдання"
+end
+
+@enduml

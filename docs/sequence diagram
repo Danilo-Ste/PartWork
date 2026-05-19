@@ -1,0 +1,37 @@
+@startuml
+title Сценарій: Створення, прийняття і завершення завдання
+
+actor "Замовник" as Client
+actor "Виконавець" as Worker
+participant "TaskService" as Task
+participant "UserService" as User
+participant "NotificationService" as Notify
+participant "PaymentService" as Pay
+
+'Створення завдання
+Client -> Task: Створює нове завдання (опис, оплата, адреса)
+Task -> User: Перевірка акаунта замовника
+User --> Task: Акаунт підтверджено
+Task -> Notify: Розсилка сповіщення виконавцям про нове завдання
+Notify -> Worker: "Доступне нове завдання"
+
+'Відгук виконавця
+Worker -> Task: Надсилає відгук (готовий виконати)
+Task -> Client: Сповіщення про новий відгук
+Client -> Task: Підтверджує виконавця
+Task -> Notify: Повідомлення виконавцю про підтвердження
+Notify -> Worker: "Ви обрані для виконання"
+
+'Виконання і завершення
+Worker -> Task: Позначає завдання як виконане
+Task -> Pay: Запит на оплату
+Pay -> Client: Підтвердження переказу коштів
+Client -> Pay: Оплата через платіжну систему
+Pay --> Worker: Кошти надіслані
+
+'Після завершення
+Client -> User: Залишає відгук виконавцю
+Worker -> User: Залишає відгук замовнику
+User -> Notify: Сповіщення обом сторонам про завершення
+
+@enduml

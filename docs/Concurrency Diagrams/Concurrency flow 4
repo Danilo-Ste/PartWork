@@ -1,0 +1,27 @@
+@startuml
+title Виконавець натискає "Отримати оплату" двічі одночасно
+
+actor "Виконавець" as W
+participant "PaymentService" as Pay
+participant "Database" as DB
+participant "NotificationService" as Notify
+
+W -> Pay: Запит на оплату (ID=501)
+W -> Pay: Повторний запит на оплату (ID=501)
+
+Pay -> DB: Перевірити статус платежу
+DB --> Pay: Статус = "Очікує"
+
+Pay -> DB: Змінити статус → "Оплачено"
+DB --> Pay: Успішно
+
+Pay -> DB: Перевірка другого запиту
+DB --> Pay: Статус вже "Оплачено"
+
+Pay -> Notify: Надіслати підтвердження
+Notify -> W: "Оплата проведена"
+
+Pay -> Notify: Надіслати сповіщення про дубль
+Notify -> W: "Оплата вже виконана — повторний запит відхилено"
+
+@enduml
