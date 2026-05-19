@@ -1,4 +1,4 @@
-name: PartWork Java CI/CD Pipeline
+name: PartWork Java CI/CD Pipeline 1
 
 on:
   push:
